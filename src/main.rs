@@ -1,122 +1,46 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+mod layouts;
 mod pages;
 use pages::about::About;
 use pages::home::Home;
 use pages::page_not_found::PageNotFound;
-use yew::html::Scope;
 
-#[derive(Routable, PartialEq, Clone, Debug)]
-pub enum Route {
-    #[at("/")]
-    Home,
-    #[at("/about")]
-    About,
-    #[not_found]
-    #[at("/404")]
-    NotFound,
-}
+mod routes;
+use routes::app_routes::AppRoutes;
 
-pub enum Msg {
-    ToggleNavbar,
-}
+struct Model;
 
-pub struct App {
-    navbar_active: bool,
-}
-
-impl Component for App {
-    type Message = Msg;
+impl Component for Model {
+    type Message = ();
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            navbar_active: false,
-        }
+        Self
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::ToggleNavbar => {
-                self.navbar_active = !self.navbar_active;
-                true
-            }
-        }
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
+        false
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <BrowserRouter>
-                { self.view_nav(ctx.link()) }
-
-                <main>
-                    <Switch<Route> render={Switch::render(switch)} />
-                </main>
-                <footer class="footer">
-                    <div class="content has-text-centered">
-                        { "Powered by " }
-                        <a href="https://yew.rs">{ "Yew" }</a>
-                        { " using " }
-                        <a href="https://bulma.io">{ "Bulma" }</a>
-                        { " and images from " }
-                        <a href="https://unsplash.com">{ "Unsplash" }</a>
-                    </div>
-                </footer>
-            </BrowserRouter>
-        }
-    }
-}
-
-impl App {
-    fn view_nav(&self, link: &Scope<Self>) -> Html {
-        let Self { navbar_active, .. } = *self;
-
-        let active_class = if !navbar_active { "is-active" } else { "" };
-
-        html! {
-            <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-                <div class="navbar-brand">
-                    <h1 class="navbar-item is-size-3">{ "Yew Blog" }</h1>
-
-                    <button class={classes!("navbar-burger", "burger", active_class)}
-                        aria-label="menu" aria-expanded="false"
-                        onclick={link.callback(|_| Msg::ToggleNavbar)}
-                    >
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class={classes!("navbar-menu", active_class)}>
-                    <div class="navbar-start">
-                        <Link<Route> classes={classes!("navbar-item")} to={Route::Home}>
-                            { "Home" }
-                        </Link<Route>>
-                        <Link<Route> classes={classes!("navbar-item")} to={Route::About}>
-                            { "About" }
-                        </Link<Route>>
-                    </div>
-                </div>
-            </nav>
-        }
-    }
-}
-
-fn switch(routes: &Route) -> Html {
-    match routes.clone() {
-        Route::Home => {
-            html! { <Home /> }
-        }
-        Route::About => {
-            html! { <About /> }
-        }
-        Route::NotFound => {
-            html! { <PageNotFound /> }
+          <BrowserRouter>
+            <Switch<AppRoutes> render={Switch::render(switch)} />
+          </BrowserRouter>
         }
     }
 }
 
 fn main() {
-    yew::start_app::<App>();
+    yew::start_app::<Model>();
+}
+
+fn switch(routes: &AppRoutes) -> Html {
+    match routes {
+        AppRoutes::Home => html! { <Home /> },
+        AppRoutes::About => html! { <About /> },
+        AppRoutes::NotFound => html! { <PageNotFound /> },
+    }
 }

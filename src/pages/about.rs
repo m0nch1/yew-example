@@ -1,4 +1,9 @@
-use yew::prelude::*;
+use yew::{html, Component, Context, Html};
+
+use crate::layouts::main_layout::MainLayout;
+
+#[derive(PartialEq)]
+pub struct Props;
 
 pub struct About;
 
@@ -12,18 +17,9 @@ impl Component for About {
 
   fn view(&self, _ctx: &Context<Self>) -> Html {
     html! {
-        <section class="hero is-danger is-bold is-large">
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title">
-                        { "About" }
-                    </h1>
-                    <h2 class="subtitle">
-                        { "this is about page" }
-                    </h2>
-                </div>
-            </div>
-        </section>
+      <MainLayout>
+        <h1>{"About"}</h1>
+      </MainLayout>
     }
   }
 }
