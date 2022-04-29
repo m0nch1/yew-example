@@ -12,7 +12,7 @@ impl Component for PageNotFound {
 
   fn view(&self, _ctx: &Context<Self>) -> Html {
     html! {
-        <section class="hero is-danger is-bold is-large">
+        <section class={classes!("bg-red-100")}>
             <div class="hero-body">
                 <div class="container">
                     <h1 class="title">
